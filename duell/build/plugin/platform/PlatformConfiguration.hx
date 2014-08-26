@@ -22,6 +22,33 @@ class PlatformConfiguration
 	public function new()
 	{}
 
-	
+	public static function getData() : PlatformConfigurationData
+	{
+	    if(_configuration == null)
+	    	initConfig();
+
+	    return _configuration;
+	}
+	public static function getConfigParsingDefines() : Array<String>
+	{
+	    return _parsingDefines;
+	}
+	public static function addParsingDefines(str : String):Void
+	{
+	    _parsingDefines.push(str);
+	}
+	public static function initConfig() : Void
+	{
+	    _configuration = 
+	    {
+	    	PLATFORM_NAME : "flash",
+	    	SWF_NAME : "main",
+	    	WIN_WIDTH : "800",
+	    	WIN_HEIGHT : "600",
+	    	SWF_VERSION : "",
+	    	BUILD_DIR : "",
+	    	DEBUG_FLAG : "" 
+	    };
+	}
 
 }
