@@ -7,11 +7,15 @@ package duell.build.plugin.platform;
 typedef PlatformConfigurationData = {
 PLATFORM_NAME : String,
 APP_MAIN_CLASS : String,
+DEFAULT_BROWSER : String,
 SWF_NAME : String,
 WIN_WIDTH : String,
 WIN_HEIGHT : String,
 SWF_VERSION : String,
+TARGET_PLAYER : String,
 BUILD_DIR : String,
+FPS  : String;
+BGCOLOR : String;
 DEBUG_FLAG : String,//advanced-telemetry OR final
 }
 
@@ -43,11 +47,11 @@ class PlatformConfiguration
 	    {
 	    	PLATFORM_NAME : "flash",
 	    	SWF_NAME : "main",
-	    	WIN_WIDTH : "800",
-	    	WIN_HEIGHT : "600",
-	    	SWF_VERSION : "",
-	    	BUILD_DIR : "",
-	    	DEBUG_FLAG : "" 
+	    	WIDTH : "800",
+	    	HEIGHT : "600",
+	    	DEFAULT_BROWSER : "default" // "Google Chrome", "FireFox" etc... and "default" for picking user default browser
+	    	SWF_VERSION : "20",// flash player version 11.7 , check http://goo.gl/OUiCVV for complete list
+	    	TARGET_PLAYER : "11.7"
 	    };
 	}
 
