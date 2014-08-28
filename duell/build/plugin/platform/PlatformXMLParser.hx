@@ -3,6 +3,8 @@
  * @date 26.08.2014.
  * @company Gameduell GmbH
  */
+package duell.build.plugin.platform;
+
 import haxe.xml.Fast;
 
 import duell.build.objects.DuellProjectXML;
@@ -35,35 +37,20 @@ import duell.helpers.LogHelper;
 			switch (element.name) 
 			{
 				case "swf":
-					parseSWF(element.name);
+					parseSWF(element);
 				case "win-size":
-					parseWinSize(element.name);
+					parseWinSize(element);
 				case "swf-version":
-					parseSWFVersion(element.name);
-				case "build-dir":
-					parseBuildDir(element.name);
+					parseSWFVersion(element);
 			}
 		}
 	}
-	public static function parseTargetPlayer(element : Fast) : Void
-	{
-	    if(element.has.value)
-	    {
-	      	PlatformConfiguration.getData().TAGET_PLAYER =  element.att.value;  
-	    }
-	}
-	public static function parseBuildDir(element : Fast) : Void
-	{
-	    if(element.has.value)
-	    {
-	      	PlatformConfiguration.getData().BUILD_DIR =   resolvePath(element.att.value);  
-	    }
-	}
+	
 	public static function parseSWFVersion(element : Fast) : Void
 	{
-	    if(element.has.value)
+	    if(element.has.version)
 	    {
-	     	PlatformConfiguration.getData().SWF_VERSION = element.att.value;     
+	     	PlatformConfiguration.getData().SWF_VERSION = element.att.version;     
 	    }
 	}
 	public static function parseWinSize(element : Fast) : Void
@@ -93,10 +80,10 @@ import duell.helpers.LogHelper;
 		{
 			PlatformConfiguration.getData().BGCOLOR = element.att.bgColor;
 		}
-		
+
 		if(element.has.targetPlayer && element.att.targetPlayer != "")
 		{
-			PlatformConfiguration.getData().TAGET_PLAYER = element.att.targetPlayer;
+			PlatformConfiguration.getData().TARGET_PLAYER = element.att.targetPlayer;
 		}
 
 	}
