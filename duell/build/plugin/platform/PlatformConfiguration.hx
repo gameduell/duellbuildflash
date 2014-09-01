@@ -49,7 +49,6 @@ class PlatformConfiguration
 			SWF_NAME : "main",
 			WIDTH : "800",
 			HEIGHT : "600",
-			SWF_VERSION : "11.7",/// flash player version 11.7 , check http://goo.gl/OUiCVV for complete list
 			TARGET_PLAYER : "11.7",
 			BUILD_DIR : "",
 			FPS  : "60",

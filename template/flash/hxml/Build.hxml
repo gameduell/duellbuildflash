@@ -1,5 +1,5 @@
 -main ::MAIN:: ::foreach (HAXE_COMPILE_ARGS)::
 ::__current__::::end::
--swf-version ::PLATFORM.SWF_VERSION::
+-swf-version ::PLATFORM.TARGET_PLAYER::
 -swf ::OUTPUT::/flash/web/::APP.FILE::.swf
 -swf-header ::PLATFORM.WIDTH:::::PLATFORM.HEIGHT:::::PLATFORM.FPS:::::PLATFORM.BGCOLOR::
