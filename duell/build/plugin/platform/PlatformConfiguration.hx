@@ -53,7 +53,7 @@ class PlatformConfiguration
 			TARGET_PLAYER : "11.7",
 			BUILD_DIR : "",
 			FPS  : "60",
-			BGCOLOR : "0xD9E9FF",
+			BGCOLOR : "0xFFFFFF",
 	    };
 	}
 

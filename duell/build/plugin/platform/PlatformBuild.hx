@@ -29,6 +29,40 @@
  	{
  		checkArguments();
  	}
+	public static function checkArguments():Void
+ 	{
+		for (arg in Sys.args())
+		{
+			if (arg == "-debug")
+			{
+				isDebug = true;
+			}
+			
+			if( arg == "-advanced-telemetry")
+			{
+				isAdvancedTelemetry = true;
+			}
+		}
+
+		if (isDebug)
+		{
+			PlatformConfiguration.addParsingDefines("debug");
+		}
+		else
+		{
+			PlatformConfiguration.addParsingDefines("release");
+		}
+
+		if(isAdvancedTelemetry)
+		{
+			PlatformConfiguration.addParsingDefines("advanced-telemetry");
+		}
+		else
+		{
+			PlatformConfiguration.addParsingDefines("final");
+		}
+ 	}
+
  	public function parse() : Void
  	{
  	    parseProject();
@@ -72,7 +106,6 @@
  	{
 		LogHelper.info("", "" + Configuration.getData());
 		LogHelper.info("", "" + Configuration.getData().LIBRARY.GRAPHICS);
-		trace("", "Target Directory" + targetDirectory);
 		ProcessHelper.runCommand(targetDirectory+"/flash/hxml/","haxe",["Build.hxml"]);
  	}
 
@@ -108,49 +141,16 @@
 
 		for (define in DuellProjectXML.getConfig().parsingConditions)
 		{
-			if (define == "debug" ) /// not allowed
+			if (define == "debug" )
+			{
+				/// not allowed
+				Configuration.getData().HAXE_COMPILE_ARGS.push("-debug");
 				continue;
+			} 
 
 			Configuration.getData().HAXE_COMPILE_ARGS.push("-D");
 			Configuration.getData().HAXE_COMPILE_ARGS.push(define);
 		}
 	} 	
-	public static function checkArguments():Void
- 	{
-		for (arg in Sys.args())
-		{
-			if (arg == "-debug")
-			{
-				isDebug = true;
-			}
-			
-			if( arg == "-advanced-telemetry")
-			{
-				isAdvancedTelemetry = true;
-			}
-			
-
-		}
-
-		if (isDebug)
-		{
-			PlatformConfiguration.addParsingDefines("debug");
-		}
-		else
-		{
-			PlatformConfiguration.addParsingDefines("release");
-		}
-
-		if(isAdvancedTelemetry)
-		{
-			PlatformConfiguration.addParsingDefines("advanced-telemetry");
-		}
-		else
-		{
-			PlatformConfiguration.addParsingDefines("final");
-		}
-
-
- 	}
 
  }
