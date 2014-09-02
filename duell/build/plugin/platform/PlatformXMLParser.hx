@@ -40,19 +40,11 @@ import duell.helpers.LogHelper;
 					parseSWF(element);
 				case "win-size":
 					parseWinSize(element);
-				case "swf-version":
-					parseSWFVersion(element);
 			}
 		}
 	}
 	
-	public static function parseSWFVersion(element : Fast) : Void
-	{
-	    if(element.has.version)
-	    {
-	     	PlatformConfiguration.getData().SWF_VERSION = element.att.version;     
-	    }
-	}
+	
 	public static function parseWinSize(element : Fast) : Void
 	{
 	    if(element.has.width && element.att.width != "")
