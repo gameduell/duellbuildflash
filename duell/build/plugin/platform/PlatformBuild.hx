@@ -14,7 +14,7 @@
  import duell.objects.DuellLib;
  import duell.objects.Haxelib;
  import duell.helpers.TemplateHelper;
- 
+
  import sys.io.Process;
  class PlatformBuild
  {
@@ -116,12 +116,6 @@
  	}
  	public function runApp() : Void
  	{
- 		// LogHelper.info("", "Launching application in "+PlatformConfiguration.getData().DEFAULT_BROWSER+" browser");
- 	 //    var result : Int = ProcessHelper.openURL(targetDirectory+"flash/web/index.html");
- 	 //    if(result != 0)
- 	 //    {
- 	 //    	LogHelper.error ("could not launch the application");
- 	 //    }
 		var result : Int = prepareAndRunHTTPServer();
 		Sys.putEnv("SLIMERJSLAUNCHER", duellBuildFlashPath+"bin/slimerjs-0.9.1/xulrunner/xulrunner");
 		ProcessHelper.runCommand(duellBuildFlashPath+"bin/slimerjs-0.9.1","python",["slimerjs.py","../test.js"]);
@@ -131,8 +125,6 @@
  	{
  		var args:Array<String> = [duellBuildFlashPath+"bin/node/http-server/http-server",targetDirectory+"flash/web","-p", "3000", "-c-1"];
  	    serverProcess = new Process(duellBuildFlashPath+"/bin/node/node-mac",args);
- 	    //var result : Int = serverProcess.exitCode();
- 	    //return result;
  	    return 0;
  	}
  	public function prepareFlashBuild() : Void
