@@ -26,11 +26,13 @@
  	public var targetDirectory : String;
  	public var duellBuildFlashPath : String;
  	public var projectDirectory : String;
+ 	private  var applicationWillRunAfterBuild : Bool = false;
+
  	public function new()
  	{
  		checkArguments();
  	}
-	public static function checkArguments():Void
+	public function checkArguments():Void
  	{
 		for (arg in Sys.args())
 		{
@@ -38,8 +40,10 @@
 			{
 				isDebug = true;
 			}
-			
-			if( arg == "-advanced-telemetry")
+			if(arg == "-run")
+			{
+				applicationWillRunAfterBuild = true;
+			}				if( arg == "-advanced-telemetry")
 			{
 				isAdvancedTelemetry = true;
 			}
@@ -82,6 +86,10 @@
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    prepareFlashBuild();
  	    convertParsingDefinesToCompilationDefines();
+ 	    if(applicationWillRunAfterBuild)
+ 	    {
+ 	    	prepareAndRunHTTPServer();
+ 	    }
  	}
  	private function convertDuellAndHaxelibsIntoHaxeCompilationFlags()
 	{
@@ -116,16 +124,14 @@
  	}
  	public function runApp() : Void
  	{
-		var result : Int = prepareAndRunHTTPServer();
 		Sys.putEnv("SLIMERJSLAUNCHER", duellBuildFlashPath+"bin/slimerjs-0.9.1/xulrunner/xulrunner");
 		ProcessHelper.runCommand(duellBuildFlashPath+"bin/slimerjs-0.9.1","python",["slimerjs.py","../test.js"]);
-
  	}
- 	public function prepareAndRunHTTPServer() : Int
+ 	public function prepareAndRunHTTPServer() : Void
  	{
+ 		PathHelper.mkdir(targetDirectory+"flash/web");
  		var args:Array<String> = [duellBuildFlashPath+"bin/node/http-server/http-server",targetDirectory+"flash/web","-p", "3000", "-c-1"];
  	    serverProcess = new Process(duellBuildFlashPath+"/bin/node/node-mac",args);
- 	    return 0;
  	}
  	public function prepareFlashBuild() : Void
  	{
