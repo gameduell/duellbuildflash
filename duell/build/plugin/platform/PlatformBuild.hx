@@ -16,13 +16,19 @@
  import duell.helpers.TemplateHelper;
 
  import sys.io.Process;
+
+ import haxe.io.Path;
+
  class PlatformBuild
  {
  	public var requiredSetups = ["flash"];
 
  	private static var isDebug : Bool = false;
  	private static var isAdvancedTelemetry : Bool = false;
+	private var runInSlimerJS : Bool = false;
+	private var runInBrowser : Bool = false;
 	private var serverProcess : Process; 
+	private var DEFAULT_SERVER_URL : String = "http://localhost:3000/";
  	public var targetDirectory : String;
  	public var duellBuildFlashPath : String;
  	public var projectDirectory : String;
@@ -43,10 +49,19 @@
 			if(arg == "-run")
 			{
 				applicationWillRunAfterBuild = true;
-			}				if( arg == "-advanced-telemetry")
+			}				
+			if( arg == "-advanced-telemetry")
 			{
 				isAdvancedTelemetry = true;
 			}
+			if(arg == "-slimerjs")
+			{
+				runInSlimerJS = true;
+			}	
+			if(arg == "-browser")
+			{
+				runInBrowser = true;
+			}	
 		}
 
 		if (isDebug)
@@ -66,6 +81,9 @@
 		{
 			PlatformConfiguration.addParsingDefines("final");
 		}
+		/// if nothing passed slimerjs is the default
+ 		if(!runInBrowser && !runInSlimerJS)
+ 			runInSlimerJS = true;
  	}
 
  	public function parse() : Void
@@ -79,14 +97,14 @@
  	}
  	public function prepareBuild() : Void
  	{
- 	    targetDirectory = Configuration.getData().OUTPUT + "/";
- 	    projectDirectory = targetDirectory + "/";
+ 	    targetDirectory = Configuration.getData().OUTPUT;
+ 	    projectDirectory = targetDirectory;
  	    duellBuildFlashPath = DuellLib.getDuellLib("duellbuildflash").getPath();
 		
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    prepareFlashBuild();
  	    convertParsingDefinesToCompilationDefines();
- 	    if(applicationWillRunAfterBuild)
+ 	    if(applicationWillRunAfterBuild && runInSlimerJS)
  	    {
  	    	prepareAndRunHTTPServer();
  	    }
@@ -115,7 +133,7 @@
  	{
 		LogHelper.info("", "" + Configuration.getData());
 		LogHelper.info("", "" + Configuration.getData().LIBRARY.GRAPHICS);
-		ProcessHelper.runCommand(targetDirectory+"/flash/hxml/","haxe",["Build.hxml"]);
+		ProcessHelper.runCommand(Path.join([targetDirectory,"flash","hxml"]),"haxe",["Build.hxml"]);
  	}
 
  	public function run() : Void
@@ -124,14 +142,31 @@
  	}
  	public function runApp() : Void
  	{
-		Sys.putEnv("SLIMERJSLAUNCHER", duellBuildFlashPath+"bin/slimerjs-0.9.1/xulrunner/xulrunner");
-		ProcessHelper.runCommand(duellBuildFlashPath+"bin/slimerjs-0.9.1","python",["slimerjs.py","../test.js"]);
+ 		/// order here matters cause opening slimerjs is a blocker process	
+ 		if(runInBrowser  && !runInSlimerJS)
+ 		{
+ 			prepareAndRunHTTPServer();
+ 			ProcessHelper.runCommand("","sleep",["1"]);
+ 			ProcessHelper.openURL(DEFAULT_SERVER_URL);
+			/// create blocking command
+			ProcessHelper.startBlockingProcess(serverProcess);
+		}
+ 		else if(runInBrowser && runInSlimerJS)
+ 		{
+ 			ProcessHelper.runCommand("","sleep",["1"]);
+ 			ProcessHelper.openURL(DEFAULT_SERVER_URL);
+ 		}
+ 		if(runInSlimerJS == true)
+ 		{
+			Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildFlashPath,"bin","slimerjs-0.9.1","xulrunner","xulrunner"]));
+			ProcessHelper.runCommand(Path.join([duellBuildFlashPath,"bin","slimerjs-0.9.1"]),"python",["slimerjs.py","../test.js"]);
+ 		} 
  	}
  	public function prepareAndRunHTTPServer() : Void
  	{
- 		PathHelper.mkdir(targetDirectory+"flash/web");
- 		var args:Array<String> = [duellBuildFlashPath+"bin/node/http-server/http-server",targetDirectory+"flash/web","-p", "3000", "-c-1"];
- 	    serverProcess = new Process(duellBuildFlashPath+"/bin/node/node-mac",args);
+ 		PathHelper.mkdir(Path.join([targetDirectory,"flash","web"]));
+ 		var args:Array<String> = [Path.join([duellBuildFlashPath,"bin","node","http-server","http-server"]),Path.join([targetDirectory,"flash","web"]),"-p", "3000", "-c-1"];
+ 	    serverProcess = new Process(Path.join([duellBuildFlashPath,"bin","node","node-mac"]),args);
  	}
  	public function prepareFlashBuild() : Void
  	{
@@ -144,7 +179,7 @@
 
  	    ///copying template files 
  	    /// index.html, expressInstall.swf and swiftObject.js
- 	    TemplateHelper.recursiveCopyTemplatedFiles(duellBuildFlashPath + "template/", projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
+ 	    TemplateHelper.recursiveCopyTemplatedFiles(Path.join([duellBuildFlashPath,"template"]), projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
  	}
 	private function convertParsingDefinesToCompilationDefines()
 	{	
