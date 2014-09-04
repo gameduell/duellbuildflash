@@ -4,7 +4,6 @@
  * @company Gameduell GmbH
  */
   package duell.build.plugin.platform;
-
  import duell.build.objects.Configuration;
  import duell.build.objects.DuellProjectXML;
  import duell.helpers.PathHelper;
@@ -18,7 +17,6 @@
  import sys.io.Process;
 
  import haxe.io.Path;
-
  class PlatformBuild
  {
  	public var requiredSetups = ["flash"];

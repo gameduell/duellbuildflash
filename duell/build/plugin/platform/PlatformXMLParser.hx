@@ -11,7 +11,6 @@ import duell.build.objects.DuellProjectXML;
 import duell.build.objects.Configuration;
 import duell.helpers.XMLHelper;
 import duell.helpers.LogHelper;
-
  class PlatformXMLParser
  {
  	public function new()
@@ -52,16 +51,14 @@ import duell.helpers.LogHelper;
 	{
 	    if(element.has.key && element.has.value)
 	    {
-	    	PlatformConfiguration.getData().WIN_PARAMETERS.push({KEY:element.att.key, VALUE:element.att.value});
-	    	trace(PlatformConfiguration.getData().WIN_PARAMETERS);
+	    	addUniqueKeyValueToKeyValueArray(PlatformConfiguration.getData().WIN_PARAMETERS,element.att.key,element.att.value);
 	    }
 	}
 	public static function parseFlashVarElement(element : Fast):Void
 	{
 	    if(element.has.key && element.has.value)
 	    {
-	    	PlatformConfiguration.getData().FLASH_VARS.push({KEY:element.att.key, VALUE:element.att.value});
-	    	trace(PlatformConfiguration.getData().FLASH_VARS);
+	    	addUniqueKeyValueToKeyValueArray(PlatformConfiguration.getData().FLASH_VARS,element.att.key,element.att.value);
 	    }
 	}
 	public static function parseWinSizeElement(element : Fast) : Void
@@ -102,5 +99,19 @@ import duell.helpers.LogHelper;
 	{
 		return DuellProjectXML.getConfig().resolvePath(string);
 	}
+	private static function addUniqueKeyValueToKeyValueArray(keyValueArray : Array<{KEY : String, VALUE : String}>, key : String, value : String)
+	{
+		for (keyValuePair in keyValueArray)
+		{
+			if (keyValuePair.KEY == key)
+			{
+				LogHelper.println('Overriting key $key value ${keyValuePair.VALUE} with value $value');
+				keyValuePair.VALUE = value;
+			}
+		}
+
+		keyValueArray.push({KEY : key, VALUE : value});
+	}
+
 
  }
