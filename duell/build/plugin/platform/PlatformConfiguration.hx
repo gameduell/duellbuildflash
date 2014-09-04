@@ -4,6 +4,7 @@
  * @company Gameduell GmbH
  */
 package duell.build.plugin.platform;
+typedef KeyValueArray = Array<{KEY : String, VALUE : String}>;
 
 typedef PlatformConfigurationData = {
 PLATFORM_NAME : String,
@@ -15,6 +16,8 @@ TARGET_PLAYER : String,
 BUILD_DIR : String,
 FPS  : String,
 BGCOLOR : String,
+WIN_PARAMETERS : KeyValueArray,
+FLASH_VARS : KeyValueArray
 }
 
 class PlatformConfiguration
@@ -52,6 +55,8 @@ class PlatformConfiguration
 			BUILD_DIR : "",
 			FPS  : "60",
 			BGCOLOR : "0xFFFFFF",
+			WIN_PARAMETERS : [],
+			FLASH_VARS :[]
 	    };
 	}
 

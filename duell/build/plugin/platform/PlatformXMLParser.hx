@@ -37,15 +37,34 @@ import duell.helpers.LogHelper;
 			switch (element.name) 
 			{
 				case "swf":
-					parseSWF(element);
+					parseSWFElement(element);
 				case "win-size":
-					parseWinSize(element);
+					parseWinSizeElement(element);
+				case "win-param":
+					parseWinParamElement(element);
+				case "flash-var":
+					parseFlashVarElement(element);
 			}
 		}
 	}
 	
-	
-	public static function parseWinSize(element : Fast) : Void
+	public static function parseWinParamElement(element : Fast):Void
+	{
+	    if(element.has.key && element.has.value)
+	    {
+	    	PlatformConfiguration.getData().WIN_PARAMETERS.push({KEY:element.att.key, VALUE:element.att.value});
+	    	trace(PlatformConfiguration.getData().WIN_PARAMETERS);
+	    }
+	}
+	public static function parseFlashVarElement(element : Fast):Void
+	{
+	    if(element.has.key && element.has.value)
+	    {
+	    	PlatformConfiguration.getData().FLASH_VARS.push({KEY:element.att.key, VALUE:element.att.value});
+	    	trace(PlatformConfiguration.getData().FLASH_VARS);
+	    }
+	}
+	public static function parseWinSizeElement(element : Fast) : Void
 	{
 	    if(element.has.width && element.att.width != "")
 	    {
@@ -56,7 +75,7 @@ import duell.helpers.LogHelper;
 	    	PlatformConfiguration.getData().HEIGHT = element.att.height;
 	    }
 	}
-	public static function parseSWF(element : Fast) : Void
+	public static function parseSWFElement(element : Fast) : Void
 	{
 		if(element.has.name && element.att.name != "")
 		{

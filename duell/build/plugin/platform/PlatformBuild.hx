@@ -75,7 +75,7 @@
 
 		if(isAdvancedTelemetry)
 		{
-			PlatformConfiguration.addParsingDefines("advanced-telemetry");
+			PlatformConfiguration.addParsingDefines("-advanced-telemetry");
 		}
 		else
 		{
@@ -174,6 +174,7 @@
  	}
  	public function createDirectoryAndCopyTemplate() : Void
  	{
+ 		trace(PlatformConfiguration.getData().WIN_PARAMETERS);
  		/// Create directories
  		PathHelper.mkdir(targetDirectory);
 
