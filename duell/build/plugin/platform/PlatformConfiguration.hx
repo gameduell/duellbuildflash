@@ -7,17 +7,17 @@ package duell.build.plugin.platform;
 typedef KeyValueArray = Array<{KEY : String, VALUE : String}>;
 
 typedef PlatformConfigurationData = {
-PLATFORM_NAME : String,
-DEFAULT_BROWSER : String,
-SWF_NAME : String,
-WIDTH : String,
-HEIGHT : String,
-TARGET_PLAYER : String,
-BUILD_DIR : String,
-FPS  : String,
-BGCOLOR : String,
-WIN_PARAMETERS : KeyValueArray,
-FLASH_VARS : KeyValueArray
+	PLATFORM_NAME : String,
+	DEFAULT_BROWSER : String,
+	SWF_NAME : String,
+	WIDTH : String,
+	HEIGHT : String,
+	TARGET_PLAYER : String,
+	BUILD_DIR : String,
+	FPS  : String,
+	BGCOLOR : String,
+	WIN_PARAMETERS : KeyValueArray,
+	FLASH_VARS : KeyValueArray
 }
 
 class PlatformConfiguration

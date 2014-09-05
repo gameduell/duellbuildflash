@@ -129,8 +129,6 @@
 	}
  	public function build() : Void
  	{
-		LogHelper.info("", "" + Configuration.getData());
-		LogHelper.info("", "" + Configuration.getData().LIBRARY.GRAPHICS);
 		ProcessHelper.runCommand(Path.join([targetDirectory,"flash","hxml"]),"haxe",["Build.hxml"]);
  	}
 
@@ -172,7 +170,6 @@
  	}
  	public function createDirectoryAndCopyTemplate() : Void
  	{
- 		trace(PlatformConfiguration.getData().WIN_PARAMETERS);
  		/// Create directories
  		PathHelper.mkdir(targetDirectory);
 
