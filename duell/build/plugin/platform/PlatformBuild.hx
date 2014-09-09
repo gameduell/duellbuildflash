@@ -80,8 +80,8 @@
 			PlatformConfiguration.addParsingDefines("final");
 		}
 		/// if nothing passed slimerjs is the default
- 		if(!runInBrowser && !runInSlimerJS)
- 			runInSlimerJS = true;
+ 		if(runInBrowser == false && runInSlimerJS == false)
+ 			runInBrowser = true;
  	}
 
  	public function parse() : Void
