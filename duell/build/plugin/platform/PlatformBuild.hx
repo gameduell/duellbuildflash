@@ -13,6 +13,7 @@
  import duell.objects.DuellLib;
  import duell.objects.Haxelib;
  import duell.helpers.TemplateHelper;
+ import duell.helpers.PlatformHelper;
 
  import sys.io.Process;
 
@@ -139,14 +140,12 @@
  		if(runInBrowser  && !runInSlimerJS)
  		{
  			prepareAndRunHTTPServer();
- 			ProcessHelper.runCommand("","sleep",["1"]);
  			ProcessHelper.openURL(DEFAULT_SERVER_URL);
 			/// create blocking command
 			ProcessHelper.startBlockingProcess(serverProcess);
 		}
  		else if(runInBrowser && runInSlimerJS)
  		{
- 			ProcessHelper.runCommand("","sleep",["1"]);
  			ProcessHelper.openURL(DEFAULT_SERVER_URL);
  		}
  		if(runInSlimerJS == true)
@@ -157,9 +156,42 @@
  	}
  	public function prepareAndRunHTTPServer() : Void
  	{
- 		PathHelper.mkdir(Path.join([targetDirectory,"flash","web"]));
- 		var args:Array<String> = [Path.join([duellBuildFlashPath,"bin","node","http-server","http-server"]),Path.join([targetDirectory,"flash","web"]),"-p", "3000", "-c-1"];
- 	    serverProcess = new Process(Path.join([duellBuildFlashPath,"bin","node","node-mac"]),args);
+        var serverTargetDirectory : String  = Path.join([targetDirectory,"flash","web"]);
+        PathHelper.mkdir(serverTargetDirectory);
+        var serverDirectory : String = Path.join([duellBuildFlashPath,"bin","node","http-server","http-server"]);
+        var args:Array<String> = [Path.join([duellBuildFlashPath,"bin","node","http-server","http-server"]),Path.join([targetDirectory,"flash","web"]),"-p", "3000", "-c-1"];
+        var serverPrefix : String = "";
+
+        switch(PlatformHelper.hostPlatform)
+        {
+            case Platform.WINDOWS :
+                serverPrefix =  "windows";
+            case Platform.MAC :
+                serverPrefix =  "mac";
+            case Platform.LINUX :
+                serverPrefix =  "linux";
+            default:
+
+        }
+
+        var archPrefix : String = "";
+        switch(PlatformHelper.hostArchitecture)
+        {
+            case Architecture.X86 :
+                archPrefix =  "32";
+            case Architecture.X64 :
+                archPrefix =  "64";
+            default:
+
+        }
+
+        if(serverPrefix != "linux")
+            archPrefix = "";
+
+        serverProcess = new Process(Path.join([duellBuildFlashPath,"bin","node","node-"+serverPrefix+archPrefix]),args);
+         		//PathHelper.mkdir(Path.join([targetDirectory,"flash","web"]));
+        //var args:Array<String> = [Path.join([duellBuildFlashPath,"bin","node","http-server","http-server"]),Path.join([targetDirectory,"flash","web"]),"-p", "3000", "-c-1"];
+        //	    serverProcess = new Process(Path.join([duellBuildFlashPath,"bin","node","node-mac"]),args);
  	}
  	public function prepareFlashBuild() : Void
  	{
