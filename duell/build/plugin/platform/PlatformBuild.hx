@@ -12,6 +12,7 @@
  import duell.helpers.ProcessHelper;
  import duell.objects.DuellLib;
  import duell.objects.Haxelib;
+ import duell.helpers.ServerHelper;
  import duell.helpers.TemplateHelper;
  import duell.helpers.PlatformHelper;
 
@@ -157,41 +158,7 @@
  	public function prepareAndRunHTTPServer() : Void
  	{
         var serverTargetDirectory : String  = Path.join([targetDirectory,"flash","web"]);
-        PathHelper.mkdir(serverTargetDirectory);
-        var serverDirectory : String = Path.join([duellBuildFlashPath,"bin","node","http-server","http-server"]);
-        var args:Array<String> = [Path.join([duellBuildFlashPath,"bin","node","http-server","http-server"]),Path.join([targetDirectory,"flash","web"]),"-p", "3000", "-c-1"];
-        var serverPrefix : String = "";
-
-        switch(PlatformHelper.hostPlatform)
-        {
-            case Platform.WINDOWS :
-                serverPrefix =  "windows";
-            case Platform.MAC :
-                serverPrefix =  "mac";
-            case Platform.LINUX :
-                serverPrefix =  "linux";
-            default:
-
-        }
-
-        var archPrefix : String = "";
-        switch(PlatformHelper.hostArchitecture)
-        {
-            case Architecture.X86 :
-                archPrefix =  "32";
-            case Architecture.X64 :
-                archPrefix =  "64";
-            default:
-
-        }
-
-        if(serverPrefix != "linux")
-            archPrefix = "";
-
-        serverProcess = new Process(Path.join([duellBuildFlashPath,"bin","node","node-"+serverPrefix+archPrefix]),args);
-         		//PathHelper.mkdir(Path.join([targetDirectory,"flash","web"]));
-        //var args:Array<String> = [Path.join([duellBuildFlashPath,"bin","node","http-server","http-server"]),Path.join([targetDirectory,"flash","web"]),"-p", "3000", "-c-1"];
-        //	    serverProcess = new Process(Path.join([duellBuildFlashPath,"bin","node","node-mac"]),args);
+ 		serverProcess = ServerHelper.runServer(serverTargetDirectory, duellBuildFlashPath);
  	}
  	public function prepareFlashBuild() : Void
  	{
