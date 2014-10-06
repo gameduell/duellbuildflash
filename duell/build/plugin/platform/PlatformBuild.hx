@@ -10,6 +10,7 @@
  import duell.helpers.LogHelper;
  import duell.helpers.FileHelper;
  import duell.helpers.ProcessHelper;
+ import duell.helpers.TestHelper;
  import duell.objects.DuellLib;
  import duell.objects.Haxelib;
  import duell.helpers.ServerHelper;
@@ -22,12 +23,14 @@
  class PlatformBuild
  {
  	public var requiredSetups = ["flash"];
+	public static inline var TEST_RESULT_FILENAME = "test_result_flash.xml";
 
  	private static var isDebug : Bool = false;
  	private static var isAdvancedTelemetry : Bool = false;
 	private var runInSlimerJS : Bool = false;
 	private var runInBrowser : Bool = false;
 	private var serverProcess : Process; 
+	private var fullTestResultPath : String;
 	private var DEFAULT_SERVER_URL : String = "http://localhost:3000/";
  	public var targetDirectory : String;
  	public var duellBuildFlashPath : String;
@@ -99,6 +102,7 @@
  	{
  	    targetDirectory = Configuration.getData().OUTPUT;
  	    projectDirectory = targetDirectory;
+		fullTestResultPath = Path.join([targetDirectory, TEST_RESULT_FILENAME]);
  	    duellBuildFlashPath = DuellLib.getDuellLib("duellbuildflash").getPath();
 		
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
@@ -135,6 +139,12 @@
  	{
  	    runApp();/// run app in the browser
  	}
+
+	public function test()
+	{
+		testApp();
+	}
+
  	public function runApp() : Void
  	{
  		/// order here matters cause opening slimerjs is a blocker process	
@@ -188,5 +198,11 @@
 			Configuration.getData().HAXE_COMPILE_ARGS.push("-D " + define);
 		}
 	} 	
+
+	private function testApp()
+	{
+		neko.vm.Thread.create(runApp);
+		TestHelper.runListenerServer(10, 8181, fullTestResultPath);
+	}
 
  }
