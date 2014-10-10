@@ -16,6 +16,7 @@
  import duell.helpers.ServerHelper;
  import duell.helpers.TemplateHelper;
  import duell.helpers.PlatformHelper;
+ import duell.objects.DuellProcess;
 
  import sys.io.Process;
 
@@ -23,19 +24,22 @@
  class PlatformBuild
  {
  	public var requiredSetups = ["flash"];
-	public static inline var TEST_RESULT_FILENAME = "test_result_flash.xml";
+	private static inline var TEST_RESULT_FILENAME = "test_result_flash.xml";
+	private static inline var DEFAULT_SERVER_URL : String = "http://localhost:3000/";
+	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 1;
 
- 	private static var isDebug : Bool = false;
- 	private static var isAdvancedTelemetry : Bool = false;
+ 	private var isDebug : Bool = false;
+ 	private var isTest : Bool = false;
+ 	private var isAdvancedTelemetry : Bool = false;
 	private var runInSlimerJS : Bool = false;
 	private var runInBrowser : Bool = false;
-	private var serverProcess : Process; 
+	private var serverProcess : DuellProcess; 
+	private var slimerProcess : DuellProcess; 
 	private var fullTestResultPath : String;
-	private var DEFAULT_SERVER_URL : String = "http://localhost:3000/";
- 	public var targetDirectory : String;
- 	public var duellBuildFlashPath : String;
- 	public var projectDirectory : String;
- 	private  var applicationWillRunAfterBuild : Bool = false;
+ 	private var targetDirectory : String;
+ 	private var duellBuildFlashPath : String;
+ 	private var projectDirectory : String;
+ 	private var applicationWillRunAfterBuild : Bool = false;
 
  	public function new()
  	{
@@ -65,28 +69,34 @@
 			{
 				runInBrowser = true;
 			}	
+			else if (arg == "-test")
+			{
+				isTest = true;
+				applicationWillRunAfterBuild = true;
+				Configuration.addParsingDefine("test");
+			}
 		}
 
 		if (isDebug)
 		{
-			PlatformConfiguration.addParsingDefines("debug");
+			Configuration.addParsingDefine("debug");
 		}
 		else
 		{
-			PlatformConfiguration.addParsingDefines("release");
+			Configuration.addParsingDefine("release");
 		}
 
 		if(isAdvancedTelemetry)
 		{
-			PlatformConfiguration.addParsingDefines("-advanced-telemetry");
+			Configuration.addParsingDefine("-advanced-telemetry");
 		}
 		else
 		{
-			PlatformConfiguration.addParsingDefines("final");
+			Configuration.addParsingDefine("final");
 		}
 		/// if nothing passed slimerjs is the default
  		if(runInBrowser == false && runInSlimerJS == false)
- 			runInBrowser = true;
+ 			runInSlimerJS = true;
  	}
 
  	public function parse() : Void
@@ -101,14 +111,14 @@
  	public function prepareBuild() : Void
  	{
  	    targetDirectory = Configuration.getData().OUTPUT;
- 	    projectDirectory = targetDirectory;
-		fullTestResultPath = Path.join([targetDirectory, TEST_RESULT_FILENAME]);
+ 	    projectDirectory = Path.join([targetDirectory, "flash"]);
+		fullTestResultPath = Path.join([Configuration.getData().OUTPUT, "test", TEST_RESULT_FILENAME]);
  	    duellBuildFlashPath = DuellLib.getDuellLib("duellbuildflash").getPath();
 		
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
- 	    prepareFlashBuild();
  	    convertParsingDefinesToCompilationDefines();
- 	    if(applicationWillRunAfterBuild && runInSlimerJS)
+ 	    prepareFlashBuild();
+ 	    if(applicationWillRunAfterBuild)
  	    {
  	    	prepareAndRunHTTPServer();
  	    }
@@ -132,7 +142,8 @@
 	}
  	public function build() : Void
  	{
-		ProcessHelper.runCommand(Path.join([targetDirectory,"flash","hxml"]),"haxe",["Build.hxml"]);
+		var buildPath : String  = Path.join([targetDirectory,"flash","hxml"]);
+		ProcessHelper.runCommand(buildPath,"haxe",["Build.hxml"]);
  	}
 
  	public function run() : Void
@@ -148,22 +159,31 @@
  	public function runApp() : Void
  	{
  		/// order here matters cause opening slimerjs is a blocker process	
- 		if(runInBrowser  && !runInSlimerJS)
- 		{
- 			prepareAndRunHTTPServer();
- 			ProcessHelper.openURL(DEFAULT_SERVER_URL);
-			/// create blocking command
-			ProcessHelper.startBlockingProcess(serverProcess);
-		}
- 		else if(runInBrowser && runInSlimerJS)
+ 		if(runInBrowser)
  		{
  			ProcessHelper.openURL(DEFAULT_SERVER_URL);
  		}
- 		if(runInSlimerJS == true)
+
+ 		if(runInSlimerJS)
  		{
 			Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildFlashPath,"bin","slimerjs-0.9.1","xulrunner","xulrunner"]));
-			ProcessHelper.runCommand(Path.join([duellBuildFlashPath,"bin","slimerjs-0.9.1"]),"python",["slimerjs.py","../test.js"]);
+			slimerProcess = new DuellProcess(
+												Path.join([duellBuildFlashPath, "bin", "slimerjs-0.9.1"]), 
+												"python", 
+												["slimerjs.py","../test.js"], 
+												{
+													loggingPrefix : "", 
+													logOnlyIfVerbose : false, 
+													systemCommand : true,
+													timeout : 0
+												});
+			slimerProcess.blockUntilFinished();
+			serverProcess.kill();
  		} 
+ 		else if(runInBrowser)
+ 		{
+			serverProcess.blockUntilFinished();
+ 		}
  	}
  	public function prepareAndRunHTTPServer() : Void
  	{
@@ -181,7 +201,7 @@
 
  	    ///copying template files 
  	    /// index.html, expressInstall.swf and swiftObject.js
- 	    TemplateHelper.recursiveCopyTemplatedFiles(Path.join([duellBuildFlashPath,"template"]), projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
+ 	    TemplateHelper.recursiveCopyTemplatedFiles(Path.join([duellBuildFlashPath,"template", "flash"]), projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
  	}
 	private function convertParsingDefinesToCompilationDefines()
 	{	
@@ -195,14 +215,56 @@
 				continue;
 			} 
 
+			if (define == "flash")
+			{
+				/// not allowed
+				continue;
+			}
+
 			Configuration.getData().HAXE_COMPILE_ARGS.push("-D " + define);
 		}
 	} 	
 
+
 	private function testApp()
 	{
-		neko.vm.Thread.create(runApp);
-		TestHelper.runListenerServer(10, 8181, fullTestResultPath);
+		/// DELETE PREVIOUS TEST
+		if (sys.FileSystem.exists(fullTestResultPath))
+		{
+			sys.FileSystem.deleteFile(fullTestResultPath);
+		}
+
+		/// CREATE TARGET FOLDER
+		PathHelper.mkdir(Path.directory(fullTestResultPath));
+
+		/// RUN THE APP IN A THREAD
+		var targetTime = haxe.Timer.stamp() + DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP;
+		neko.vm.Thread.create(function()
+		{
+			Sys.sleep(DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP);
+
+			runApp();
+		});
+
+		/// RUN THE LISTENER
+		try
+		{
+			TestHelper.runListenerServer(60, 8181, fullTestResultPath);
+		}
+		catch (e:Dynamic)
+		{
+			serverProcess.kill();
+			if (runInSlimerJS)
+			{
+				slimerProcess.kill();
+			}
+			neko.Lib.rethrow(e);
+		}
+		serverProcess.kill();
+		if (runInSlimerJS)
+		{
+			slimerProcess.kill();
+		}
 	}
 
  }
