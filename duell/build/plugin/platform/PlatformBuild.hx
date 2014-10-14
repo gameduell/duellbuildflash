@@ -149,10 +149,8 @@
 											"haxe", 
 											["Build.hxml"], 
 											{
-												loggingPrefix : "", 
 												logOnlyIfVerbose : false, 
-												systemCommand : true,
-												timeout : 0
+												systemCommand : true
 											});
 		buildProcess.blockUntilFinished();
 
@@ -193,10 +191,8 @@
 												"python", 
 												["slimerjs.py","../test.js"], 
 												{
-													loggingPrefix : "", 
 													logOnlyIfVerbose : false, 
-													systemCommand : true,
-													timeout : 0
+													systemCommand : true
 												});
 			slimerProcess.blockUntilFinished();
 			serverProcess.kill();
