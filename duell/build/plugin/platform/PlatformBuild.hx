@@ -143,7 +143,28 @@
  	public function build() : Void
  	{
 		var buildPath : String  = Path.join([targetDirectory,"flash","hxml"]);
-		ProcessHelper.runCommand(buildPath,"haxe",["Build.hxml"]);
+
+		var buildProcess = new DuellProcess(
+											buildPath, 
+											"haxe", 
+											["Build.hxml"], 
+											{
+												loggingPrefix : "", 
+												logOnlyIfVerbose : false, 
+												systemCommand : true,
+												timeout : 0
+											});
+		buildProcess.blockUntilFinished();
+
+		if (buildProcess.exitCode() != 0)
+		{
+			if (applicationWillRunAfterBuild)
+			{
+				serverProcess.kill();
+			}
+
+			LogHelper.error("Haxe Compilation Failed");
+		}
  	}
 
  	public function run() : Void
