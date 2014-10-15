@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
-	
+        ::foreach PLATFORM.PREHEAD_SECTIONS::
+        ::__current__::
+        ::end::  
 	<head>
 		
 		<title>::APP.TITLE::</title>
-		
+        ::foreach PLATFORM.HEAD_SECTIONS::
+        ::__current__::
+        ::end::  
 		<script type="text/javascript" src="swfobject.js"></script>
 		<script type="text/javascript">
 			
@@ -36,7 +40,16 @@
 	
 	<body>
 		
+		::foreach PLATFORM.BODY_SECTIONS::
+        ::__current__::
+        ::end::
+		
 		<div id="duell-view"></div>
+        
+        ::foreach PLATFORM.JS_INCLUDES::
+           <script type="text/javascript" src="./::__current__.destination::"></script>
+        ::end:: 
+
 		
 	</body>
 	

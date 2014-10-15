@@ -43,10 +43,38 @@ import duell.helpers.LogHelper;
 					parseWinParamElement(element);
 				case "flash-var":
 					parseFlashVarElement(element);
+				case "head-section":
+					parseHeadSection(element);
+				case "js-source":
+					parseJSIncludeElement(element);
+				case "prehead-section":
+					parsePreheadSectionElement(element);
+				case "body-section":
+					parseBodySectionElement(element);
 			}
 		}
 	}
-	
+	private static function parseHeadSection(element : Fast) : Void
+	{
+		PlatformConfiguration.getData().HEAD_SECTIONS.push(element.innerHTML);
+	}
+	public static function parseBodySectionElement(element : Fast) : Void
+	{
+		PlatformConfiguration.getData().BODY_SECTIONS.push(element.innerHTML);
+	}
+	public static function parsePreheadSectionElement(element : Fast) : Void
+	{
+		PlatformConfiguration.getData().PREHEAD_SECTIONS.push(element.innerHTML);
+	}
+	public static function parseJSIncludeElement(element : Fast) : Void
+	{
+		var path:haxe.io.Path;
+		if(element.has.path)
+		{
+			path = new haxe.io.Path(resolvePath(element.att.path));
+			PlatformConfiguration.getData().JS_INCLUDES.push({originalPath : resolvePath(element.att.path), destination : "libs/"+path.file+"."+path.ext, applyTemplate : element.has.applyTemplate ? cast element.att.applyTemplate : false});
+		}
+	}
 	public static function parseWinParamElement(element : Fast):Void
 	{
 	    if(element.has.key && element.has.value)

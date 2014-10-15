@@ -118,6 +118,7 @@
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    convertParsingDefinesToCompilationDefines();
  	    prepareFlashBuild();
+ 	    copyJSIncludesToLibFolder();
  	    if(applicationWillRunAfterBuild)
  	    {
  	    	prepareAndRunHTTPServer();
@@ -242,6 +243,27 @@
 		}
 	} 	
 
+	private function copyJSIncludesToLibFolder() : Void
+	{
+		var jsIncludesPaths : Array<String> = [];
+		var copyDestinationPath : String = "";
+	    
+	    for ( scriptItem in PlatformConfiguration.getData().JS_INCLUDES )
+	    {
+	    	copyDestinationPath = Path.join([projectDirectory,"web",scriptItem.destination]);
+
+	    	PathHelper.mkdir(Path.directory(copyDestinationPath));
+	    	if(scriptItem.applyTemplate == true)
+	    	{
+	    		TemplateHelper.copyTemplateFile(scriptItem.originalPath, copyDestinationPath, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
+	    	}
+	    	else
+	    	{
+	    		FileHelper.copyIfNewer(scriptItem.originalPath, copyDestinationPath);
+	    	}
+
+	    }
+	}	
 
 	private function testApp()
 	{

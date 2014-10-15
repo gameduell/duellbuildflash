@@ -5,10 +5,13 @@
  */
 package duell.build.plugin.platform;
 typedef KeyValueArray = Array<{KEY : String, VALUE : String}>;
-
+typedef ScriptItem = {
+	originalPath : String,
+	destination : String, 
+	applyTemplate : Bool
+}
 typedef PlatformConfigurationData = {
 	PLATFORM_NAME : String,
-	DEFAULT_BROWSER : String,
 	SWF_NAME : String,
 	WIDTH : String,
 	HEIGHT : String,
@@ -17,7 +20,11 @@ typedef PlatformConfigurationData = {
 	FPS  : String,
 	BGCOLOR : String,
 	WIN_PARAMETERS : KeyValueArray,
-	FLASH_VARS : KeyValueArray
+	FLASH_VARS : KeyValueArray,
+	HEAD_SECTIONS : Array<String>,
+	BODY_SECTIONS : Array<String>,
+	JS_INCLUDES : Array<ScriptItem>,
+	PREHEAD_SECTIONS : Array<String>
 }
 
 class PlatformConfiguration
@@ -44,7 +51,6 @@ class PlatformConfiguration
 	    _configuration = 
 	    {
 			PLATFORM_NAME : "flash",
-			DEFAULT_BROWSER : "default",/// "Google Chrome", "FireFox" etc... and "default" for picking user default browser
 			SWF_NAME : "main",
 			WIDTH : "800",
 			HEIGHT : "600",
@@ -53,7 +59,11 @@ class PlatformConfiguration
 			FPS  : "60",
 			BGCOLOR : "0xFFFFFF",
 			WIN_PARAMETERS : [],
-			FLASH_VARS :[]
+			FLASH_VARS :[],
+			HEAD_SECTIONS:[],
+			BODY_SECTIONS:[],
+			JS_INCLUDES : [],
+			PREHEAD_SECTIONS : []
 	    };
 	}
 
