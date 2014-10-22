@@ -52,8 +52,8 @@ class PlatformConfiguration
 	    {
 			PLATFORM_NAME : "flash",
 			SWF_NAME : "main",
-			WIDTH : "800",
-			HEIGHT : "600",
+			WIDTH : "1024",
+			HEIGHT : "768",
 			TARGET_PLAYER : "11.7",
 			BUILD_DIR : "",
 			FPS  : "60",
