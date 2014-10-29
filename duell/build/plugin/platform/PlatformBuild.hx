@@ -17,6 +17,7 @@
  import duell.helpers.TemplateHelper;
  import duell.helpers.PlatformHelper;
  import duell.objects.DuellProcess;
+ import duell.objects.Arguments;
 
  import sys.io.Process;
 
@@ -47,34 +48,36 @@
  	}
 	public function checkArguments():Void
  	{
-		for (arg in Sys.args())
+		if (Arguments.isSet("-debug"))
 		{
-			if (arg == "-debug")
-			{
-				isDebug = true;
-			}
-			if(arg == "-run")
-			{
-				applicationWillRunAfterBuild = true;
-			}				
-			if( arg == "-advanced-telemetry")
-			{
-				isAdvancedTelemetry = true;
-			}
-			if(arg == "-slimerjs")
-			{
-				runInSlimerJS = true;
-			}	
-			if(arg == "-browser")
-			{
-				runInBrowser = true;
-			}	
-			else if (arg == "-test")
-			{
-				isTest = true;
-				applicationWillRunAfterBuild = true;
-				Configuration.addParsingDefine("test");
-			}
+			isDebug = true;
+		}
+
+		if (!Arguments.isSet("-norun"))
+		{
+			applicationWillRunAfterBuild = true;
+		}	
+
+		if (Arguments.isSet("-advanced-telemetry"))
+		{
+			isAdvancedTelemetry = true;
+		}
+
+		if (Arguments.isSet("-slimerjs"))
+		{
+			runInSlimerJS = true;
+		}	
+
+		if (Arguments.isSet("-browser"))
+		{
+			runInBrowser = true;
+		}	
+		
+		if (Arguments.isSet("-test"))
+		{
+			isTest = true;
+			applicationWillRunAfterBuild = true;
+			Configuration.addParsingDefine("test");
 		}
 
 		if (isDebug)
@@ -109,12 +112,9 @@
 		projectXML.parse();
  	}
  	public function prepareBuild() : Void
- 	{
- 	    targetDirectory = Configuration.getData().OUTPUT;
- 	    projectDirectory = Path.join([targetDirectory, "flash"]);
-		fullTestResultPath = Path.join([Configuration.getData().OUTPUT, "test", TEST_RESULT_FILENAME]);
- 	    duellBuildFlashPath = DuellLib.getDuellLib("duellbuildflash").getPath();
-		
+ 	{	
+ 		prepareVariables();
+
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    convertParsingDefinesToCompilationDefines();
  	    prepareFlashBuild();
@@ -124,6 +124,15 @@
  	    	prepareAndRunHTTPServer();
  	    }
  	}
+
+ 	private function prepareVariables()
+ 	{
+ 	    targetDirectory = Configuration.getData().OUTPUT;
+ 	    projectDirectory = Path.join([targetDirectory, "flash"]);
+		fullTestResultPath = Path.join([Configuration.getData().OUTPUT, "test", TEST_RESULT_FILENAME]);
+ 	    duellBuildFlashPath = DuellLib.getDuellLib("duellbuildflash").getPath();
+ 	}
+
  	private function convertDuellAndHaxelibsIntoHaxeCompilationFlags()
 	{
 		for (haxelib in Configuration.getData().DEPENDENCIES.HAXELIBS)
@@ -174,6 +183,21 @@
 	public function test()
 	{
 		testApp();
+	}
+
+	public function publish()
+	{
+		throw "Publishing is not yet implemented for this platform";
+	}
+
+	public function fast()
+	{
+		parseProject();
+
+		prepareVariables();
+ 	    prepareAndRunHTTPServer();
+		build();
+		runApp();
 	}
 
  	public function runApp() : Void
