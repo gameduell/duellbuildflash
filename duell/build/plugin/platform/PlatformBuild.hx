@@ -197,7 +197,11 @@
 		prepareVariables();
  	    prepareAndRunHTTPServer();
 		build();
-		runApp();
+
+		if (Arguments.isSet("-test"))
+			testApp()
+		else
+			runApp();
 	}
 
  	public function runApp() : Void
