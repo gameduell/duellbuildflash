@@ -25,6 +25,7 @@
  class PlatformBuild
  {
  	public var requiredSetups = ["flash"];
+	public var supportedHostPlatforms = [WINDOWS, MAC];
 	private static inline var TEST_RESULT_FILENAME = "test_result_flash.xml";
 	private static inline var DEFAULT_SERVER_URL : String = "http://localhost:3000/";
 	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 1;
