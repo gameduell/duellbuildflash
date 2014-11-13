@@ -9,7 +9,7 @@
  import duell.helpers.PathHelper;
  import duell.helpers.LogHelper;
  import duell.helpers.FileHelper;
- import duell.helpers.ProcessHelper;
+ import duell.helpers.CommandHelper;
  import duell.helpers.TestHelper;
  import duell.objects.DuellLib;
  import duell.objects.Haxelib;
@@ -22,6 +22,9 @@
  import sys.io.Process;
 
  import haxe.io.Path;
+
+ using StringTools;
+
  class PlatformBuild
  {
  	public var requiredSetups = ["flash"];
@@ -155,17 +158,16 @@
  	{
 		var buildPath : String  = Path.join([targetDirectory,"flash","hxml"]);
 
-		var buildProcess = new DuellProcess(
-											buildPath, 
-											"haxe", 
+		var result = CommandHelper.runHaxe( buildPath,
 											["Build.hxml"], 
 											{
 												logOnlyIfVerbose : false, 
-												systemCommand : true
+												systemCommand : true,
+												errorMessage: "compiling the haxe code",
+												exitOnError: false
 											});
-		buildProcess.blockUntilFinished();
 
-		if (buildProcess.exitCode() != 0)
+		if (result != 0)
 		{
 			if (applicationWillRunAfterBuild)
 			{
@@ -210,19 +212,47 @@
  		/// order here matters cause opening slimerjs is a blocker process	
  		if(runInBrowser)
  		{
- 			ProcessHelper.openURL(DEFAULT_SERVER_URL);
+ 			CommandHelper.openURL(DEFAULT_SERVER_URL);
  		}
 
  		if(runInSlimerJS)
  		{
-			Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildFlashPath,"bin","slimerjs-0.9.1","xulrunner","xulrunner"]));
+
+ 			var slimerFolder: String;
+
+ 			if (PlatformHelper.hostPlatform == LINUX)
+ 			{
+ 				slimerFolder = "slimerjs_linux";
+				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildFlashPath,"bin",slimerFolder,"xulrunner","xulrunner"]));
+ 			}
+ 			else if (PlatformHelper.hostPlatform == MAC)
+ 			{
+				slimerFolder = "slimerjs_mac";
+				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildFlashPath,"bin",slimerFolder,"xulrunner","xulrunner"]));
+ 			}
+ 			else
+ 			{
+				slimerFolder = "slimerjs_win";
+				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildFlashPath,"bin",slimerFolder,"xulrunner","xulrunner.exe"]).replace("/", "\\"));
+ 			}
+
+ 			if (PlatformHelper.hostPlatform != WINDOWS)
+ 			{
+	 			CommandHelper.runCommand(Path.join([duellBuildFlashPath, "bin", slimerFolder, "xulrunner"]),
+	 									 "chmod",
+	 									 ["+x", "xulrunner"], 
+	 									 {systemCommand: true,
+	 									  errorMessage: "Setting permissions for slimerjs"});
+ 			}
+
 			slimerProcess = new DuellProcess(
-												Path.join([duellBuildFlashPath, "bin", "slimerjs-0.9.1"]), 
+												Path.join([duellBuildFlashPath, "bin", slimerFolder]), 
 												"python", 
 												["slimerjs.py","../test.js"], 
 												{
 													logOnlyIfVerbose : false, 
-													systemCommand : true
+													systemCommand : true,
+													errorMessage: "Running the slimer js browser"
 												});
 			slimerProcess.blockUntilFinished();
 			serverProcess.kill();
