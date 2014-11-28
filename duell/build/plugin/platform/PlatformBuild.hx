@@ -95,7 +95,7 @@
 
 		if(isAdvancedTelemetry)
 		{
-			Configuration.addParsingDefine("-advanced-telemetry");
+			Configuration.addParsingDefine("advanced-telemetry");
 		}
 		else
 		{
