@@ -4,6 +4,9 @@
     Use this plugin to build for the flash platform. 
 	</documentation>
 	<configuration>
+		<elem name="swf">
+			Use this to specify targetPlayer, fps or bgColor of the swf. E.g.:&lt;swf targetPlayer="14" fps="60" bgColor="0x000000" /&gt;.
+		</elem>
 	</configuration>
 
 	<arg name="-debug" type="void">
