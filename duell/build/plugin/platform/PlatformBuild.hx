@@ -353,6 +353,9 @@ class PlatformBuild
     	*/
 
         /// 1.build the spine as3 library with directory mode set to true to get the library.swf
+        
+        
+        
         var classes: Array<String> = [];
         var libExportPath: String = Path.join([Configuration.getData().OUTPUT, "flash", "swf-libs", asSourceItem.name]);
         var dirs: Array<String> = [];
@@ -435,6 +438,8 @@ class PlatformBuild
 
     private function copySwfLibsToLibFolderAndIncludeLibSwf(): Void
     {
+        //create swf-lib folder
+        PathHelper.mkdir(Path.join([Configuration.getData().OUTPUT, "flash", "swf-libs"]));
         for (asSource in PlatformConfiguration.getData().AS_SOURCES)
         {
             buildAS3Sources(asSource);
