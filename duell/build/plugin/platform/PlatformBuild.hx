@@ -3,30 +3,31 @@
  * @date 26.08.2014.
  * @company Gameduell GmbH
  */
-  package duell.build.plugin.platform;
- import duell.build.objects.Configuration;
- import duell.build.objects.DuellProjectXML;
- import duell.helpers.PathHelper;
- import duell.helpers.LogHelper;
- import duell.helpers.FileHelper;
- import duell.helpers.CommandHelper;
- import duell.helpers.TestHelper;
- import duell.objects.DuellLib;
- import duell.objects.Haxelib;
- import duell.helpers.ServerHelper;
- import duell.helpers.TemplateHelper;
- import duell.helpers.PlatformHelper;
- import duell.objects.DuellProcess;
- import duell.objects.Arguments;
+package duell.build.plugin.platform;
+import duell.build.objects.Configuration;
+import duell.build.objects.DuellProjectXML;
+import duell.helpers.PathHelper;
+import duell.helpers.LogHelper;
+import duell.helpers.FileHelper;
+import duell.helpers.CommandHelper;
+import duell.helpers.TestHelper;
+import duell.objects.DuellLib;
+import duell.objects.Haxelib;
+import duell.helpers.ServerHelper;
+import duell.helpers.TemplateHelper;
+import duell.helpers.PlatformHelper;
+import duell.objects.DuellProcess;
+import duell.objects.Arguments;
 
- import sys.io.Process;
+import sys.io.Process;
+import sys.FileSystem;
 
- import haxe.io.Path;
+import haxe.io.Path;
 
- using StringTools;
+using StringTools;
 
- class PlatformBuild
- {
+class PlatformBuild
+{
  	public var requiredSetups = ["flash"];
 	public var supportedHostPlatforms = [WINDOWS, MAC];
 	private static inline var TEST_RESULT_FILENAME = "test_result_flash.xml";
@@ -377,4 +378,4 @@
 		}
 	}
 
- }
+}
