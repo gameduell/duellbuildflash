@@ -365,4 +365,16 @@
 		}
 	}
 
+	public function clean()
+	{
+		prepareVariables();
+
+		LogHelper.info('Cleaning flash part of export folder...');
+
+		if (FileSystem.exists(targetDirectory))
+		{
+			PathHelper.removeDirectory(targetDirectory);
+		}
+	}
+
  }
