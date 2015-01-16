@@ -131,6 +131,7 @@ class PlatformBuild
         copySwfLibsToLibFolderAndIncludeLibSwf();
         convertDuellAndHaxelibsIntoHaxeCompilationFlags();
         convertParsingDefinesToCompilationDefines();
+        forceHaxeJson();
         prepareFlashBuild();
         copyJSIncludesToLibFolder();
         if (applicationWillRunAfterBuild)
@@ -166,6 +167,11 @@ class PlatformBuild
         {
             Configuration.getData().HAXE_COMPILE_ARGS.push("-cp " + path);
         }
+    }
+
+    private function forceHaxeJson(): Void
+    {
+        Configuration.getData().HAXE_COMPILE_ARGS.push("-D haxeJSON");
     }
 
     public function build(): Void
