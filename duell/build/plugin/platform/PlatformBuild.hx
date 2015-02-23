@@ -33,7 +33,7 @@ using StringTools;
 
 class PlatformBuild
 {
-    public var requiredSetups = ["flash"];
+    public var requiredSetups = [{name: "flash", version: "1.0.0"}];
     public var supportedHostPlatforms = [WINDOWS, MAC];
     private static inline var TEST_RESULT_FILENAME = "test_result_flash.xml";
     private static inline var DEFAULT_SERVER_URL: String = "http://localhost:3000/";
