@@ -156,7 +156,10 @@ class PlatformBuild
     {
         for (haxelib in Configuration.getData().DEPENDENCIES.HAXELIBS)
         {
-            Configuration.getData().HAXE_COMPILE_ARGS.push("-lib " + haxelib.name + (haxelib.version != "" ? ":" + haxelib.version : ""));
+            var version = haxelib.version;
+            if (version.startsWith("ssh") || version.startsWith("http"))
+                version = "";
+            Configuration.getData().HAXE_COMPILE_ARGS.push("-lib " + haxelib.name + (version != "" ? ":" + version : ""));
         }
 
         for (duelllib in Configuration.getData().DEPENDENCIES.DUELLLIBS)
