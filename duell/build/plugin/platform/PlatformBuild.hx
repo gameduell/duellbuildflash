@@ -247,20 +247,25 @@ class PlatformBuild
         if (runInSlimerJS)
         {
 
+
             var slimerFolder: String;
             var xulrunnerFolder: String;
+            var xulrunnerCommand: String;
 
             if (PlatformHelper.hostPlatform == LINUX)
             {
                 slimerFolder = "slimerjs_linux";
+                xulrunnerCommand = "xulrunner";
             }
             else if (PlatformHelper.hostPlatform == MAC)
             {
                 slimerFolder = "slimerjs_mac";
+                xulrunnerCommand = "xulrunner";
             }
             else
             {
                 slimerFolder = "slimerjs_win";
+                xulrunnerCommand = "xulrunner.exe";
             }
 
             xulrunnerFolder = Path.join([duellBuildFlashPath,"bin",slimerFolder,"xulrunner"]);
@@ -276,7 +281,7 @@ class PlatformBuild
 
             slimerProcess = new DuellProcess(
                                                 xulrunnerFolder, 
-                                                "xulrunner", 
+                                                xulrunnerCommand, 
                                                 ["-app", 
                                                  Path.join([duellBuildFlashPath, "bin", slimerFolder, "application.ini"]), 
                                                  "-no-remote", 
