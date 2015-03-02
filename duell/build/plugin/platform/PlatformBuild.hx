@@ -248,41 +248,44 @@ class PlatformBuild
         {
 
             var slimerFolder: String;
+            var xulrunnerFolder: String;
 
             if (PlatformHelper.hostPlatform == LINUX)
             {
                 slimerFolder = "slimerjs_linux";
-                Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildFlashPath, "bin", slimerFolder, "xulrunner", "xulrunner"]));
             }
             else if (PlatformHelper.hostPlatform == MAC)
             {
                 slimerFolder = "slimerjs_mac";
-                Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildFlashPath, "bin", slimerFolder, "xulrunner", "xulrunner"]));
             }
             else
             {
                 slimerFolder = "slimerjs_win";
-                Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildFlashPath, "bin", slimerFolder, "xulrunner", "xulrunner.exe"]).replace("/", "\\"));
             }
+
+            xulrunnerFolder = Path.join([duellBuildFlashPath,"bin",slimerFolder,"xulrunner"]);
 
             if (PlatformHelper.hostPlatform != WINDOWS)
             {
-                CommandHelper.runCommand(Path.join([duellBuildFlashPath, "bin", slimerFolder, "xulrunner"]),
-                "chmod",
-                ["+x", "xulrunner"],
-                {systemCommand: true,
-                errorMessage: "Setting permissions for slimerjs"});
+                CommandHelper.runCommand(xulrunnerFolder,
+                                         "chmod",
+                                         ["+x", "xulrunner"], 
+                                         {systemCommand: true,
+                                          errorMessage: "Setting permissions for slimerjs"});
             }
 
             slimerProcess = new DuellProcess(
-            Path.join([duellBuildFlashPath, "bin", slimerFolder]),
-            "python",
-            ["slimerjs.py", "../test.js"],
-            {
-            logOnlyIfVerbose : false,
-            systemCommand : true,
-            errorMessage: "Running the slimer js browser"
-            });
+                                                xulrunnerFolder, 
+                                                "xulrunner", 
+                                                ["-app", 
+                                                 Path.join([duellBuildFlashPath, "bin", slimerFolder, "application.ini"]), 
+                                                 "-no-remote", 
+                                                 Path.join([duellBuildFlashPath, "bin", "test.js"])], 
+                                                {
+                                                    logOnlyIfVerbose : true, 
+                                                    systemCommand : false,
+                                                    errorMessage: "Running the slimer js browser"
+                                                });
             slimerProcess.blockUntilFinished();
             serverProcess.kill();
         }
