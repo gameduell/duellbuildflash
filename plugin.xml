@@ -7,6 +7,18 @@
 		<elem name="swf">
 			Use this to specify targetPlayer, fps or bgColor of the swf. E.g.:&lt;swf targetPlayer="14" fps="60" bgColor="0x000000" /&gt;.
 		</elem>
+		<elem name="win-size">
+			Use this to specifie the swf dimension (width x height) in the application html page. E.g.: &lt;win-size width="1024" height="768" /&gt;.
+		</elem>
+		<elem name="as-source">
+			Use this to specifie to add an as3 library source to your project. E.g.: &lt;as-source name="myLib" src="myLibSourceFolder" /&gt;. The name attribute is optional.
+		</elem>
+		<elem name="win-param">
+			Use this to specifie windows parameters for the swf embedding. E.g.: &lt;win-param key="wmode" value="direct" /&gt;. multiple tags are supported.
+		</elem>
+		<elem name="flash-var">
+			Use this to specifie flash vars for your application. E.g.: &lt;win-param key="myVar" value="myValue" /&gt;. multiple tags are supported.
+		</elem>
 	</configuration>
 
 	<arg name="-debug" type="void">
