@@ -224,8 +224,6 @@ class PlatformBuild
 
     public function fast()
     {
-        parseProject();
-
         prepareVariables();
         prepareAndRunHTTPServer();
         build();
