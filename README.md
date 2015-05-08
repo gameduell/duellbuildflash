@@ -7,6 +7,7 @@ Use this plugin to build for the flash platform.
 * `-browser` &ndash; runs the app in your default browser.
 * `-slimerjs` &ndash; Use this argument to make the app run on slimerjs which is a standalone tiny firefox. This has the benefit of not opening a new tab on your browser.
 * `-debug` &ndash; Use this argument if you want to build in debug.
+
 ## Project Configuration: 
 * `<swf>` &ndash; Use this to specify targetPlayer, fps or bgColor of the swf. E.g.:`<swf targetPlayer="14" fps="60" bgColor="0x000000" />`.
 * `<win-size>` &ndash; Use this to specifie the swf dimension (width x height) in the application html page. E.g.:`<win-size width="1024" height="768" />`.
