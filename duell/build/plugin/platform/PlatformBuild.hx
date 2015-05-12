@@ -54,7 +54,7 @@ using StringTools;
 
 class PlatformBuild
 {
-    public var requiredSetups = [{name: "flash", version: "1.0.0"}];
+    public var requiredSetups = [{name: "flash", version: "2.0.0"}];
     public var supportedHostPlatforms = [WINDOWS, MAC];
     private static inline var TEST_RESULT_FILENAME = "test_result_flash.xml";
     private static inline var DEFAULT_SERVER_URL: String = "http://localhost:3000/";
@@ -224,7 +224,7 @@ class PlatformBuild
                 serverProcess.kill();
             }
 
-            LogHelper.error("Haxe Compilation Failed");
+            throw "Haxe Compilation Failed";
         }
     }
 
@@ -293,20 +293,20 @@ class PlatformBuild
             {
                 CommandHelper.runCommand(xulrunnerFolder,
                                          "chmod",
-                                         ["+x", "xulrunner"], 
+                                         ["+x", "xulrunner"],
                                          {systemCommand: true,
                                           errorMessage: "Setting permissions for slimerjs"});
             }
 
             slimerProcess = new DuellProcess(
-                                                xulrunnerFolder, 
-                                                xulrunnerCommand, 
-                                                ["-app", 
-                                                 Path.join([duellBuildFlashPath, "bin", slimerFolder, "application.ini"]), 
-                                                 "-no-remote", 
-                                                 Path.join([duellBuildFlashPath, "bin", "test.js"])], 
+                                                xulrunnerFolder,
+                                                xulrunnerCommand,
+                                                ["-app",
+                                                 Path.join([duellBuildFlashPath, "bin", slimerFolder, "application.ini"]),
+                                                 "-no-remote",
+                                                 Path.join([duellBuildFlashPath, "bin", "test.js"])],
                                                 {
-                                                    logOnlyIfVerbose : true, 
+                                                    logOnlyIfVerbose : true,
                                                     systemCommand : false,
                                                     errorMessage: "Running the slimer js browser"
                                                 });
@@ -387,17 +387,17 @@ class PlatformBuild
     private function buildAS3Sources(asSourceItem: ASSourceItem): Void
     {
         /*
-			compc -source-path ../mycomponents/components/local  
-	    		-include-classes CustomCellRendererComponent  
-	    		-directory=true  
-	    		-debug=false 
+			compc -source-path ../mycomponents/components/local
+	    		-include-classes CustomCellRendererComponent
+	    		-directory=true
+	    		-debug=false
 	    		-output ../libraries/CustomCellRenderer
     	*/
 
         /// 1.build the spine as3 library with directory mode set to true to get the library.swf
-        
-        
-        
+
+
+
         var classes: Array<String> = [];
         var libExportPath: String = Path.join([Configuration.getData().OUTPUT, "flash", "swf-libs", asSourceItem.name]);
         var dirs: Array<String> = [];
@@ -455,7 +455,7 @@ class PlatformBuild
         }
         catch (e: Dynamic)
         {
-            LogHelper.error("Could not find source directory \"" + source + "\"");
+            throw "Could not find source directory \"" + source + "\"";
         }
 
         for (file in files)
@@ -529,7 +529,7 @@ class PlatformBuild
             slimerProcess.kill();
         }
     }
-    
+
 	public function clean()
 	{
 		prepareVariables();
@@ -541,5 +541,10 @@ class PlatformBuild
 			PathHelper.removeDirectory(targetDirectory);
 		}
 	}
+
+    public function handleError()
+    {
+
+    }
 
 }
