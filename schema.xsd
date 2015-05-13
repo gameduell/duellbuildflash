@@ -4,7 +4,7 @@
            targetNamespace="duell"
            elementFormDefault="qualified">
 
-    <xs:include schemaLocation="../duell/schema/common_schema.xsd" />
+    <xs:include schemaLocation="https://raw.githubusercontent.com/gameduell/duell/master/schema/common_schema.xsd" />
 
     <xs:complexType name="flash">
         <xs:choice maxOccurs="unbounded">
@@ -53,4 +53,3 @@
     </xs:complexType>
 
 </xs:schema>
-
