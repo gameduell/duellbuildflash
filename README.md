@@ -13,4 +13,4 @@ Use this plugin to build for the flash platform.
 * `<win-size>` &ndash; Use this to specifie the swf dimension (width x height) in the application html page. E.g.:`<win-size width="1024" height="768" />`.
 * `<as-source>` &ndash; Use this to specifie to add an as3 library source to your project. E.g.:`<as-source name="myLib" src="myLibSourceFolder" />`.The name attribute is optional.
 * `<win-param>` &ndash; Use this to specifie windows parameters for the swf embedding. E.g.:`<win-param key="wmode" value="direct" />`. Multiple tags are supported.
-* `<flash-var>` &ndash; Use this to specifie flash vars for your application. E.g.:`<win-param key="myVar" value="myValue" />`. Multiple tags are supported.
+* `<flash-var>` &ndash; Use this to specifie flash vars for your application. E.g.:`<flash-var key="myVar" value="myValue" />`. Multiple tags are supported.
