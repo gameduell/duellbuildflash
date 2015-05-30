@@ -42,7 +42,7 @@
 
 	<arg name="-advanced-telemetry" type="void">
 		<documentation>
-			Use this argument to make the app run on browser. The default is slimerjs.
+			Use this argument to enable advanced-telemetry for profiling in scout.
 		</documentation>
 	</arg>
 
