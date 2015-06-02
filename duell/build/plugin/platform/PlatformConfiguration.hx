@@ -88,7 +88,7 @@ class PlatformConfiguration
         BUILD_DIR : "",
         FPS : "60",
         BGCOLOR : "0xFFFFFF",
-        WIN_PARAMETERS : [],
+        WIN_PARAMETERS : [{KEY: "wmode", VALUE: "direct"}],
         FLASH_VARS :[],
         HEAD_SECTIONS:[],
         BODY_SECTIONS:[],
