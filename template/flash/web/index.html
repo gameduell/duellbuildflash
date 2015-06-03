@@ -2,29 +2,29 @@
 <html>
         ::foreach PLATFORM.PREHEAD_SECTIONS::
         ::__current__::
-        ::end::  
+        ::end::
 	<head>
-		
+
 		<title>::APP.TITLE::</title>
         ::foreach PLATFORM.HEAD_SECTIONS::
         ::__current__::
-        ::end::  
+        ::end::
 		<script type="text/javascript" src="swfobject.js"></script>
 		<script type="text/javascript">
-			
+
 			swfobject.embedSWF ("::APP.FILE::.swf", "duell-view",
-								 "::PLATFORM.WIDTH::", 
+								 "::PLATFORM.WIDTH::",
 								 "::PLATFORM.HEIGHT::",
 								 "::PLATFORM.TARGET_PLAYER::",
 								 "expressInstall.swf",
 								 {
 								 	::foreach PLATFORM.FLASH_VARS::
-                						::KEY:::"::VALUE::"
+                						::KEY:::"::VALUE::"::if (__index__<(PLATFORM.FLASH_VARS.length-1))::,::end::
        								::end::
 								 },
 								 {
 								 	::foreach PLATFORM.WIN_PARAMETERS::
-										::KEY:::"::VALUE::"
+										::KEY:::"::VALUE::"::if (__index__<(PLATFORM.FLASH_VARS.length-1))::,::end::
 								 	::end::
 								 },
 								 {
@@ -33,27 +33,27 @@
 			   );
 
 		</script>
-		
+
 		<style>
 			#duell-view	{ width:::PLATFORM.WIDTH::px; height:::PLATFORM.HEIGHT::px; }
 			body					{ margin:0; padding:0; overflow:hidden; }
 		</style>
-		
+
 	</head>
-	
+
 	<body>
-		
+
 		::foreach PLATFORM.BODY_SECTIONS::
         ::__current__::
         ::end::
-		
+
 		<div id="duell-view"></div>
-        
+
         ::foreach PLATFORM.JS_INCLUDES::
            <script type="text/javascript" src="./::__current__.destination::"></script>
-        ::end:: 
+        ::end::
 
-		
+
 	</body>
-	
+
 </html>

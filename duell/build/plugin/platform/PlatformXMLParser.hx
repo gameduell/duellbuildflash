@@ -184,6 +184,7 @@ class PlatformXMLParser
             {
                 LogHelper.println('Overriting key $key value ${keyValuePair.VALUE} with value $value');
                 keyValuePair.VALUE = value;
+                return;
             }
         }
 
